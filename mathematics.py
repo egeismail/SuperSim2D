@@ -40,9 +40,11 @@ def WavelengthToRgb(wavelength, gamma=0.8):
     R *= 255
     G *= 255
     B *= 255
+    if(wavelength>645):
+        R=255
     return (abs(int(R)),abs(int(G)),abs(int(B)))
 def RR0(energy):
-    return energy*1.336
+        return energy*1.336+380
 class Vector3:
     def __init__(self,x=0.0,y=0.0,z=0.0):
         self.x = float(x)
@@ -57,6 +59,8 @@ class Vector2:
         self.Color = (0,0,0)
     def Distancefrom(self,obj):
         return ((self.x-obj.x)**2+(self.y-obj.y)**2)**0.5
+    def AngleFrom(self,obj):
+        return np.arctan2(obj.x,obj.y)
 class EnergyObject(object):
     """docstring for EnergyObject."""
     def __init__(self, x=0.0,y=0.0,Energy=300):
@@ -69,18 +73,18 @@ class D2GradientUniverse(object):
         super(D2GradientUniverse, self).__init__()
         self.screen=screen
         self.UniverseGradient = []
+        self.WH = wh
         self.CreateEmptyField(0,wh[0],0,wh[1])
         self.MaxEOT = 300
     def ReplaceEObject(self,Obj):
-        for x in range(0,len(self.UniverseGradient)):
-            for y in range(0,len(self.UniverseGradient[x])):
+        for x in range(0,self.WH[0]):
+            for y in range(0,self.WH[1]):
                 energyofm = CalculateInverseSquare(Obj.Position.Distancefrom(Vector2(x,y)),Obj.Energy)                
                 #sx = np.cos(energyofm)
                 #sy = np.sin(energyofm)
                 #self.UniverseGradient[x][y].x = np.cos(energyofm)
                 #self.UniverseGradient[x][y].y = np.sin(energyofm)
                 color = WavelengthToRgb(RR0(energyofm))
-                self.UniverseGradient[x][y].color = color
                 self.screen.set_at((x,y), color)
     def CreateEmptyField(self,size_s_x,size_e_x,size_s_y,size_e_y):
         for x in range(size_s_x,size_e_x):
