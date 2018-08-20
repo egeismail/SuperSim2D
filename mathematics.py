@@ -5,6 +5,8 @@ def CalculateInverseSquare(distance,energy):
         return energy/(distance/100)**2
     except ZeroDivisionError:
         return energy
+def CalculateGravitation(mass1,mass2,distance):
+    return CalculateInverseSquare(distance,mass1*mass2*6.67408e-5)
 def WavelengthToRgb(wavelength, gamma=0.8):
     wavelength = float(wavelength)
     if wavelength >= 380 and wavelength <= 440:
@@ -50,44 +52,16 @@ class Vector3:
         self.x = float(x)
         self.y = float(y)
         self.z = float(z)
-    def Distancefrom(self,obj):
-        return ((self.x-obj.x)**2+(self.y-obj.y)**2+(self.z-obj.z)**2)**0.5
+    def Distancefrom(self,obj,Scale=1):
+        return (((self.x-obj.x)**2+(self.y-obj.y)**2+(self.z-obj.z)**2)**0.5)/Scale
 class Vector2:
     def __init__(self,x=0.0,y=0.0):
         self.x = float(x)
         self.y = float(y)
         self.Color = (0,0,0)
-    def Distancefrom(self,obj):
-        return ((self.x-obj.x)**2+(self.y-obj.y)**2)**0.5
+    def ReturnTuple(self):
+        return (int(self.x),int(self.y))
+    def Distancefrom(self,obj,Scale=1):
+        return (((self.x-obj.x)**2+(self.y-obj.y)**2)**0.5)/Scale
     def AngleFrom(self,obj):
         return np.arctan2(obj.x,obj.y)
-class EnergyObject(object):
-    """docstring for EnergyObject."""
-    def __init__(self, x=0.0,y=0.0,Energy=300):
-        super(EnergyObject, self).__init__()
-        self.Position = Vector2(x,y)
-        self.Energy = Energy
-class D2GradientUniverse(object):
-    """docstring for D2GradientUniverse."""
-    def __init__(self, screen, wh):
-        super(D2GradientUniverse, self).__init__()
-        self.screen=screen
-        self.UniverseGradient = []
-        self.WH = wh
-        self.CreateEmptyField(0,wh[0],0,wh[1])
-        self.MaxEOT = 300
-    def ReplaceEObject(self,Obj):
-        for x in range(0,self.WH[0]):
-            for y in range(0,self.WH[1]):
-                energyofm = CalculateInverseSquare(Obj.Position.Distancefrom(Vector2(x,y)),Obj.Energy)                
-                #sx = np.cos(energyofm)
-                #sy = np.sin(energyofm)
-                #self.UniverseGradient[x][y].x = np.cos(energyofm)
-                #self.UniverseGradient[x][y].y = np.sin(energyofm)
-                color = WavelengthToRgb(RR0(energyofm))
-                self.screen.set_at((x,y), color)
-    def CreateEmptyField(self,size_s_x,size_e_x,size_s_y,size_e_y):
-        for x in range(size_s_x,size_e_x):
-            self.UniverseGradient.append([])
-            for y in range(size_s_y,size_e_y):
-                self.UniverseGradient[x].append(Vector2())
