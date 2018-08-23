@@ -5,6 +5,8 @@ def CalculateInverseSquare(distance,energy):
         return energy/(distance/100)**2
     except ZeroDivisionError:
         return energy
+def GetOrbitalVelocity(mass,radius):
+    return ((6.67408e-5*mass)/radius)**0.5
 def CalculateGravitation(mass1,mass2,distance):
     return CalculateInverseSquare(distance,mass1*mass2*6.67408e-5)
 def WavelengthToRgb(wavelength, gamma=0.8):
@@ -64,4 +66,4 @@ class Vector2:
     def Distancefrom(self,obj,Scale=1):
         return (((self.x-obj.x)**2+(self.y-obj.y)**2)**0.5)/Scale
     def AngleFrom(self,obj):
-        return np.arctan2(obj.x,obj.y)
+        return np.arctan2(obj.y-self.y,obj.x-self.x)

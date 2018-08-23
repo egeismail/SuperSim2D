@@ -12,7 +12,7 @@ class NC_Particle(NCObject):
         self.Radius=Radius
         self.Color = Color
     def DisplayObject(self):
-        draw.circle(self.display,self.Color,self.Position.ReturnTuple(),self.Radius,5)
+        draw.circle(self.display,self.Color,self.Position.ReturnTuple(),self.Radius)
 class EnergyObject(object):
     """docstring for EnergyObject."""
     def __init__(self, x=0.0,y=0.0,Energy=300):
@@ -30,17 +30,18 @@ class NCUniverse(object):
         self.ExecuteGravitation()
         self.TransferVectors()
     def ExecuteGravitation(self):
-        for from_ in self.Objs:            
+        for from_ in self.Objs:
             for to in self.Objs:
                 N = CalculateGravitation(from_.Mass,to.Mass,from_.Position.Distancefrom(to.Position))
                 Angle=from_.Position.AngleFrom(to.Position)
                 if(str(N)!="inf"):
                     from_.Vector.x+= np.cos(Angle)*N
                     from_.Vector.y+= np.sin(Angle)*N
+                #draw.line(self.display, (255,255,255), (from_.Position.x,from_.Position.y), (from_.Position.x+from_.Vector.x*12,from_.Position.y-from_.Vector.y*12), 2)
     def TransferVectors(self):
         for item in self.Objs:
             item.Position.x+=item.Vector.x
-            item.Position.y-=item.Vector.y
+            item.Position.y+=item.Vector.y
     def AddObject(self,Object):
         if(Object.signatureofobject):
             self.Objs.append(Object)
