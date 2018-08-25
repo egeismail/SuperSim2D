@@ -1,14 +1,15 @@
 import numpy as np
 import pygame
+from Scaler import Scaler
 def CalculateInverseSquare(distance,energy):
-    try:
-        return energy/(distance/100)**2
-    except ZeroDivisionError:
+  try:
+        return energy/(distance)**2
+  except ZeroDivisionError:
         return energy
 def GetOrbitalVelocity(mass,radius):
     return ((6.67408e-5*mass)/radius)**0.5
 def CalculateGravitation(mass1,mass2,distance):
-    return CalculateInverseSquare(distance,mass1*mass2*6.67408e-5)
+    return CalculateInverseSquare(distance,mass1*mass2*6.67408e-11)
 def WavelengthToRgb(wavelength, gamma=0.8):
     wavelength = float(wavelength)
     if wavelength >= 380 and wavelength <= 440:
@@ -57,13 +58,20 @@ class Vector3:
     def Distancefrom(self,obj,Scale=1):
         return (((self.x-obj.x)**2+(self.y-obj.y)**2+(self.z-obj.z)**2)**0.5)/Scale
 class Vector2:
-    def __init__(self,x=0.0,y=0.0):
+    def __init__(self,x=0.0,y=0.0,scaler=Scaler()):
         self.x = float(x)
         self.y = float(y)
         self.Color = (0,0,0)
+        self.scaler = scaler
+        self.paddingTuple=(0,0)
     def ReturnTuple(self):
-        return (int(self.x),int(self.y))
+        return (self.paddingTuple[0]+self.scaler.ConvertPixel(int(self.x)),self.paddingTuple[1]+self.scaler.ConvertPixel(int(self.y)))
     def Distancefrom(self,obj,Scale=1):
         return (((self.x-obj.x)**2+(self.y-obj.y)**2)**0.5)/Scale
     def AngleFrom(self,obj):
         return np.arctan2(obj.y-self.y,obj.x-self.x)
+    def UsePadding(self,points):
+        nwl = []
+        for point in points:
+            nwl.append((self.paddingTuple[0]+point[0],self.paddingTuple[1]+point[1],))
+        return nwl
